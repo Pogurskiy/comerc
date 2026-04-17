@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.utils.http import url_has_allowed_host_and_scheme
 from .forms import RegisterForm, LoginForm, ProfileForm
 from orders.models import Order
 
@@ -30,6 +31,8 @@ def login_view(request):
             user = form.get_user()
             login(request, user)
             next_url = request.GET.get('next', '/')
+            if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                next_url = '/'
             return redirect(next_url)
         else:
             messages.error(request, 'Invalid email or password.')
