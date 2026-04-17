@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block title %}Checkout - Comerc Shop{% endblock %}
+
+{% block content %}
+<h2 class="fw-bold mb-4"><i class="bi bi-credit-card me-2"></i>Checkout</h2>
+<div class="row g-5">
+    <div class="col-lg-7">
+        <form method="post">
+            {% csrf_token %}
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Personal Information</h5>
+                    <div class="row g-3">
+                        <div class="col-md-6">{{ form.first_name|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.last_name|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.email|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.phone|as_crispy_field }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Delivery Address</h5>
+                    <div class="row g-3">
+                        <div class="col-12">{{ form.address|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.city|as_crispy_field }}</div>
+                        <div class="col-md-6">{{ form.postal_code|as_crispy_field }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Payment Method</h5>
+                    {% for radio in form.payment_method %}
+                    <div class="form-check mb-2">
+                        {{ radio.tag }}
+                        <label class="form-check-label" for="{{ radio.id_for_label }}">
+                            {{ radio.choice_label }}
+                        </label>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            <div class="card border-0 shadow-sm mb-4">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-3">Notes (optional)</h5>
+                    {{ form.notes|as_crispy_field }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100">
+                <i class="bi bi-check-circle me-2"></i>Place Order
+            </button>
+        </form>
+    </div>
+    <!-- Order Summary -->
+    <div class="col-lg-5">
+        <div class="card border-0 shadow-sm sticky-top" style="top:80px">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Order Summary</h5>
+                {% for item in cart %}
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="small">{{ item.product.name }} × {{ item.quantity }}</span>
+                    <span class="small fw-semibold">${{ item.total_price }}</span>
+                </div>
+                {% endfor %}
+                <hr>
+                <div class="d-flex justify-content-between fw-bold fs-5">
+                    <span>Total</span>
+                    <span>${{ cart.get_total_price }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

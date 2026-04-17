@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+
+{% block title %}Order #{{ order.pk }} - Comerc Shop{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2 class="fw-bold">Order #{{ order.pk }}</h2>
+            <span class="badge bg-{% if order.status == 'delivered' %}success{% elif order.status == 'cancelled' %}danger{% elif order.status == 'shipped' %}info{% else %}warning{% endif %} fs-6">
+                {{ order.get_status_display }}
+            </span>
+        </div>
+        <div class="row g-4 mb-4">
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Delivery Info</h5>
+                        <p class="mb-1"><strong>{{ order.first_name }} {{ order.last_name }}</strong></p>
+                        <p class="mb-1 text-muted">{{ order.email }}</p>
+                        <p class="mb-1 text-muted">{{ order.phone }}</p>
+                        <p class="mb-1 text-muted">{{ order.address }}</p>
+                        <p class="mb-0 text-muted">{{ order.city }}, {{ order.postal_code }}</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-body">
+                        <h5 class="fw-bold mb-3">Order Details</h5>
+                        <p class="mb-1"><strong>Date:</strong> {{ order.created|date:"N j, Y" }}</p>
+                        <p class="mb-1"><strong>Payment:</strong> {{ order.payment_method|title }}</p>
+                        <p class="mb-1"><strong>Paid:</strong>
+                            {% if order.is_paid %}<span class="text-success">Yes</span>{% else %}<span class="text-danger">No</span>{% endif %}
+                        </p>
+                        {% if order.notes %}
+                        <p class="mb-0"><strong>Notes:</strong> {{ order.notes }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm mb-4">
+            <div class="card-body">
+                <h5 class="fw-bold mb-3">Items</h5>
+                <table class="table align-middle">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Qty</th>
+                            <th class="text-end">Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in order.items.all %}
+                        <tr>
+                            <td>{{ item.product_name }}</td>
+                            <td>${{ item.price }}</td>
+                            <td>{{ item.quantity }}</td>
+                            <td class="text-end fw-semibold">${{ item.get_cost }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <th colspan="3" class="text-end">Total</th>
+                            <th class="text-end">${{ order.total_price }}</th>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        <a href="/" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left me-1"></i>Back to Shop
+        </a>
+    </div>
+</div>
+{% endblock %}
