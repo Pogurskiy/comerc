@@ -52,7 +52,8 @@ class Product(models.Model):
             end_date__gte=today
         ).order_by('-discount_percent').first()
         if discount:
-            factor = (100 - discount.discount_percent) / 100
+            from decimal import Decimal
+            factor = Decimal(100 - discount.discount_percent) / Decimal(100)
             return round(self.price * factor, 2)
         return self.price
 
