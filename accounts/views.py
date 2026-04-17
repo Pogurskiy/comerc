@@ -30,10 +30,11 @@ def login_view(request):
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            next_url = request.GET.get('next', '/')
-            if not url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
-                next_url = '/'
-            return redirect(next_url)
+            next_url = request.GET.get('next')
+            safe_url = '/'
+            if next_url and url_has_allowed_host_and_scheme(next_url, allowed_hosts={request.get_host()}):
+                safe_url = next_url
+            return redirect(safe_url)
         else:
             messages.error(request, 'Invalid email or password.')
     else:
