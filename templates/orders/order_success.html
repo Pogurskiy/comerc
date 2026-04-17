@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block title %}Order Confirmed - Comerc Shop{% endblock %}
+
+{% block content %}
+<div class="text-center py-5">
+    <div class="mb-4">
+        <i class="bi bi-check-circle-fill text-success display-1"></i>
+    </div>
+    <h2 class="fw-bold">Thank you for your order!</h2>
+    <p class="lead text-muted">Your order <strong>#{{ order.pk }}</strong> has been placed successfully.</p>
+    <p class="text-muted">We'll send a confirmation to <strong>{{ order.email }}</strong></p>
+    <div class="d-flex gap-3 justify-content-center mt-4">
+        <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-primary">
+            <i class="bi bi-receipt me-1"></i>View Order
+        </a>
+        <a href="/" class="btn btn-outline-secondary">Continue Shopping</a>
+    </div>
+</div>
+{% endblock %}
